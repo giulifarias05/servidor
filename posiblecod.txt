@@ -1,0 +1,22 @@
+const express = require('express');
+const fs = require('fs');
+
+const app = express();
+const puerto = 3000;
+
+app.get('/contar-vocales/:rutaCarpeta', (req, res) => {
+  const rutaCarpeta = req.params.rutaCarpeta;
+  const archivos = fs.readdirSync(rutaCarpeta);
+
+  const resultados = archivos.map((archivo) => {
+    const contenido = fs.readFileSync(`${rutaCarpeta}/${archivo}`, 'utf8');
+    const numVocales = (contenido.match(/[aeiou]/gi) || []).length;
+    return { archivo, numVocales };
+  });
+
+  res.json(resultados);
+});
+
+app.listen(puerto, () => {
+  console.log(`Servidor iniciado en el puerto ${puerto}`);
+});
